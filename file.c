@@ -156,17 +156,26 @@ void populateAccounts(struct account *accounts, int *size, int newSize)
 {
 	for (int i = *size; i < (*size) + newSize; i++)
 	{
-		// char *cin;
+		char *cin;
 		printf("\n** Account %d **\n", i + 1);
 		printf("enter cin : ");
-		scanf("%s", accounts[i].cin);
-		printf("enter last name : ");
-		scanf("%s", accounts[i].lname);
-		printf("enter first name : ");
-		scanf("%s", accounts[i].fname);
-		printf("enter amount : ");
-		scanf("%f", &accounts[i].amount);
-		// strcpy(accounts[i].cin, cin);
+		scanf("%s", cin);
+		if (lookUpWithCin(accounts, (*size) + newSize, cin) == -1)
+		{
+			strcpy(accounts[i].cin, cin);
+			// scanf("%s", accounts[i].cin);
+			printf("enter last name : ");
+			scanf("%s", accounts[i].lname);
+			printf("enter first name : ");
+			scanf("%s", accounts[i].fname);
+			printf("enter amount : ");
+			scanf("%f", &accounts[i].amount);
+		}
+		else
+		{
+			printf("\ncin already exists!!\n");
+			i--;
+		}
 	}
 	*size += newSize;
 	printAccounts(accounts, *size);
