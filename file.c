@@ -19,6 +19,7 @@ void printMenuShow();
 void ascendingSort(struct account *, int);
 void descendingSort(struct account *, int);
 int lookUpWithCin(struct account *, int, char *);
+void loyatlty(struct account *, int);
 
 int main()
 {
@@ -129,6 +130,7 @@ int main()
 			system("clear");
 			//system("cls");
 			printf("\nloyalty process\n");
+			loyatlty(accounts, size);
 		}
 		else if (menu == 0)
 		{
@@ -258,4 +260,15 @@ int lookUpWithCin(struct account *accounts, int size, char *cin)
 			return i;
 	}
 	return -1;
+}
+void loyatlty(struct account *accounts, int size)
+{
+	ascendingSort(accounts, size);
+	system("clear");
+	//system("cls");
+	for (int i = 0; i < 3; i++)
+	{
+		accounts[i].amount = accounts[i].amount + accounts[i].amount * 1.3;
+	}
+	printAccounts(accounts, size);
 }
