@@ -16,6 +16,8 @@ void printfMenu();
 void populateAccounts(struct account *, int *, int);
 void printAccounts(struct account *, int);
 void printMenuShow();
+void ascendingSort(struct account *, int);
+void descendingSort(struct account *, int);
 
 int main()
 {
@@ -80,11 +82,13 @@ int main()
 					system("clear");
 					//system("cls");
 					printf("ascending process\n");
+					ascendingSort(accounts, size);
 					break;
 				case 2:
 					system("clear");
 					//system("cls");
 					printf("descending process\n");
+					descendingSort(accounts, size);
 					break;
 				case 3:
 					system("clear");
@@ -175,7 +179,7 @@ void printfMenu()
 	printf("3 --> operations on accounts\n");
 	printf("4 --> show accounts\n");
 	printf("5 --> loyalty\n");
-	printf("0 --> add 1 account\n");
+	printf("0 --> quite\n");
 }
 
 void printMenuShow()
@@ -187,4 +191,43 @@ void printMenuShow()
 	printf("4 --> descending order (having balance greater than given amount)\n");
 	printf("5 --> look up with CIN\n");
 	printf("0 --> quite\n");
+}
+void ascendingSort(struct account *accounts, int size)
+{
+	for (int i = 0; i < size - 1; i++)
+	{
+		int idx = i;
+		for (int j = i + 1; j < size; j++)
+		{
+			if (accounts[j].amount < accounts[idx].amount)
+				idx = j;
+		}
+		if (idx != i)
+		{
+			struct account tmp = accounts[i];
+			accounts[i] = accounts[idx];
+			accounts[idx] = tmp;
+		}
+	}
+	printAccounts(accounts, size);
+}
+
+void descendingSort(struct account *accounts, int size)
+{
+	for (int i = 0; i < size - 1; i++)
+	{
+		int idx = i;
+		for (int j = i + 1; j < size; j++)
+		{
+			if (accounts[j].amount > accounts[idx].amount)
+				idx = j;
+		}
+		if (idx != i)
+		{
+			struct account tmp = accounts[i];
+			accounts[i] = accounts[idx];
+			accounts[idx] = tmp;
+		}
+	}
+	printAccounts(accounts, size);
 }
