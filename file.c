@@ -20,6 +20,7 @@ void ascendingSort(struct account *, int);
 void descendingSort(struct account *, int);
 int lookUpWithCin(struct account *, int, char *);
 void loyatlty(struct account *, int);
+void depot(struct account *, int, float, int);
 
 int main()
 {
@@ -58,9 +59,45 @@ int main()
 		}
 		else if (menu == 3)
 		{
+			int choice = -1;
 			system("clear");
 			//system("cls");
 			printf("\noperations on accounts process\n");
+			while (choice < 0 || choice > 2)
+			{
+				printf("\n** menu **\n");
+				printf("1 --> depot\n");
+				printf("2 --> retrait\n");
+				printf("0 --> quite\n");
+				printf("your choice : ");
+				scanf("%d", &choice);
+				switch (choice)
+				{
+				case 1:
+					system("clear");
+					//system("cls");
+					float amount;
+					char *cin;
+					printf("\nenter cin : ");
+					scanf("%s", cin);
+					int idx = lookUpWithCin(accounts, size, cin);
+					if (idx == -1)
+					{
+						printf("\naccount doesn't exist\n");
+						break;
+					}
+					else
+					{
+						printf("\nenter an amount to add\n");
+						scanf("%f", &amount);
+						depot(accounts, size, amount, idx);
+					}
+					break;
+
+				default:
+					break;
+				}
+			}
 		}
 		else if (menu == 4)
 		{
@@ -271,4 +308,9 @@ void loyatlty(struct account *accounts, int size)
 		accounts[i].amount = accounts[i].amount + accounts[i].amount * 1.3;
 	}
 	printAccounts(accounts, size);
+}
+void depot(struct account *accounts, int size, float amount, int idx)
+{
+	accounts[idx].amount += amount;
+	printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
 }
