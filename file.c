@@ -42,9 +42,13 @@ int main()
 		}
 		else if (menu == 2)
 		{
+			int newSize;
 			system("clear");
 			//system("cls");
 			printf("\nadd multiple aucounts process\n");
+			printf("\nenter the number of accounts to add :");
+			scanf("%d", &newSize);
+			populateAccounts(accounts, &size, newSize);
 		}
 		else if (menu == 3)
 		{
