@@ -18,6 +18,7 @@ void printAccounts(struct account *, int);
 void printMenuShow();
 void ascendingSort(struct account *, int);
 void descendingSort(struct account *, int);
+int lookUpWithCin(struct account *, int, char *);
 
 int main()
 {
@@ -104,6 +105,15 @@ int main()
 					system("clear");
 					//system("cls");
 					printf("look up process\n");
+					char *cin;
+					printf("enter cin to look up : ");
+					scanf("%s", cin);
+					int idx = lookUpWithCin(accounts, size, cin);
+					// printf("idx = %d", idx);
+					if (idx != -1)
+						printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
+					else
+						printf("\naccount doesn't exist\n");
 					break;
 				default:
 					system("clear");
@@ -230,4 +240,13 @@ void descendingSort(struct account *accounts, int size)
 		}
 	}
 	printAccounts(accounts, size);
+}
+int lookUpWithCin(struct account *accounts, int size, char *cin)
+{
+	for (int i = 0; i < size; i++)
+	{
+		if (!strcmp(accounts[i].cin, cin))
+			return i;
+	}
+	return -1;
 }
