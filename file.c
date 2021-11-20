@@ -19,14 +19,16 @@ void printMenuShow();
 void ascendingSort(struct account *, int);
 void descendingSort(struct account *, int);
 int lookUpWithCin(struct account *, int, char *);
-void loyatlty(struct account *, int);
-void depot(struct account *, int, float, int);
+void loyalty(struct account *, int, float);
+void depot(struct account *, float, int);
+void withdraw(struct account *accounts, float, int);
 
 int main()
 {
 	// srand(time(0));
 	struct account *accounts;
 	int size = 4, menu = 1;
+	float loyaltyPourc = 0.013;
 	accounts = (struct account *)malloc(size * sizeof(struct account));
 	for (int i = 0; i < size; i++)
 	{
@@ -66,21 +68,23 @@ int main()
 			while (choice < 0 || choice > 2)
 			{
 				printf("\n** menu **\n");
-				printf("1 --> depot\n");
+				printf("1 --> deposit\n");
 				printf("2 --> retrait\n");
 				printf("0 --> quite\n");
 				printf("your choice : ");
 				scanf("%d", &choice);
 				switch (choice)
 				{
+					int idx;
+					float amount;
+					char *cin;
 				case 1:
 					system("clear");
 					//system("cls");
-					float amount;
-					char *cin;
+					printf("\ndeposit process\n");
 					printf("\nenter cin : ");
 					scanf("%s", cin);
-					int idx = lookUpWithCin(accounts, size, cin);
+					idx = lookUpWithCin(accounts, size, cin);
 					if (idx == -1)
 					{
 						printf("\naccount doesn't exist\n");
@@ -88,9 +92,28 @@ int main()
 					}
 					else
 					{
-						printf("\nenter an amount to add\n");
+						printf("\nenter an amount to deposit\n");
 						scanf("%f", &amount);
-						depot(accounts, size, amount, idx);
+						depot(accounts, amount, idx);
+					}
+					break;
+				case 2:
+					system("clear");
+					//system("cls");
+					printf("\nwithdraw porcess\n");
+					printf("\nenter cin : ");
+					scanf("%s", cin);
+					idx = lookUpWithCin(accounts, size, cin);
+					if (idx == -1)
+					{
+						printf("\naccount doesn't exist\n");
+						break;
+					}
+					else
+					{
+						printf("\nenter an amount to withdraw\n");
+						scanf("%f", &amount);
+						withdraw(accounts, amount, idx);
 					}
 					break;
 
@@ -167,7 +190,7 @@ int main()
 			system("clear");
 			//system("cls");
 			printf("\nloyalty process\n");
-			loyatlty(accounts, size);
+			loyalty(accounts, size, loyaltyPourc);
 		}
 		else if (menu == 0)
 		{
@@ -298,19 +321,33 @@ int lookUpWithCin(struct account *accounts, int size, char *cin)
 	}
 	return -1;
 }
-void loyatlty(struct account *accounts, int size)
+void loyalty(struct account *accounts, int size, float pourc)
 {
 	ascendingSort(accounts, size);
 	system("clear");
 	//system("cls");
 	for (int i = 0; i < 3; i++)
 	{
-		accounts[i].amount = accounts[i].amount + accounts[i].amount * 1.3;
+		accounts[i].amount += (accounts[i].amount * pourc);
+		// accounts[i].amount = accounts[i].amount + accounts[i].amount * pourc;
 	}
 	printAccounts(accounts, size);
 }
-void depot(struct account *accounts, int size, float amount, int idx)
+void depot(struct account *accounts, float amount, int idx)
 {
 	accounts[idx].amount += amount;
 	printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
+}
+void withdraw(struct account *accounts, float amount, int idx)
+{
+	if (accounts[idx].amount < amount)
+	{
+		printf("\ntransaction can't be done, available balance is les than the amount you want to withdraw!!\n");
+		return;
+	}
+	else
+	{
+		accounts[idx].amount -= amount;
+		printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
+	}
 }
