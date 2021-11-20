@@ -15,6 +15,7 @@ struct account
 void printfMenu();
 void populateAccounts(struct account *, int *, int);
 void printAccounts(struct account *, int);
+void printMenuShow();
 
 int main()
 {
@@ -32,6 +33,7 @@ int main()
 	while (menu != 0)
 	{
 		printfMenu();
+		printf("your choice : ");
 		scanf("%d", &menu);
 		if (menu == 1)
 		{
@@ -58,9 +60,55 @@ int main()
 		}
 		else if (menu == 4)
 		{
+			int choice = -1;
 			system("clear");
 			//system("cls");
-			printAccounts(accounts, size);
+			while (choice < 0 || choice > 5)
+			{
+				printMenuShow();
+				printf("your choice : ");
+				scanf("%d", &choice);
+				switch (choice)
+				{
+				case 0:
+					system("clear");
+					//system("cls");
+					printf("\nback to the main menu\n");
+					break;
+
+				case 1:
+					system("clear");
+					//system("cls");
+					printf("ascending process\n");
+					break;
+				case 2:
+					system("clear");
+					//system("cls");
+					printf("descending process\n");
+					break;
+				case 3:
+					system("clear");
+					//system("cls");
+					printf("ascending process 2\n");
+					break;
+				case 4:
+					system("clear");
+					//system("cls");
+					printf("descending process 2\n");
+					break;
+				case 5:
+					system("clear");
+					//system("cls");
+					printf("look up process\n");
+					break;
+				default:
+					system("clear");
+					//system("cls");
+					printf("\nchoose a number showing on the screen (0 to quite)\n");
+					break;
+				}
+			}
+			// printAccounts(accounts, size);
 		}
 		else if (menu == 5)
 		{
@@ -128,4 +176,15 @@ void printfMenu()
 	printf("4 --> show accounts\n");
 	printf("5 --> loyalty\n");
 	printf("0 --> add 1 account\n");
+}
+
+void printMenuShow()
+{
+	printf("\n** menu **\n");
+	printf("1 --> ascending order\n");
+	printf("2 --> descending order\n");
+	printf("3 --> ascending order (having balance greater than given amount)\n");
+	printf("4 --> descending order (having balance greater than given amount)\n");
+	printf("5 --> look up with CIN\n");
+	printf("0 --> quite\n");
 }
