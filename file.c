@@ -12,13 +12,12 @@ struct account
 
 // functions signitures
 // void populateAccounts(struct account *, int);
-void populateAccounts(struct account *, int);
-void printAccounts(struct account *, int);
 void printfMenu();
+void populateAccounts(struct account *, int *, int);
+void printAccounts(struct account *, int);
 
 int main()
 {
-
 	// srand(time(0));
 	struct account *accounts;
 	int size = 4, menu = 1;
@@ -39,12 +38,13 @@ int main()
 			system("clear");
 			//system("cls");
 			printf("\nadd 1 account process\n");
+			populateAccounts(accounts, &size, 1);
 		}
 		else if (menu == 2)
 		{
 			system("clear");
 			//system("cls");
-			printf("\nadd multiple accounts process\n");
+			printf("\nadd multiple aucounts process\n");
 		}
 		else if (menu == 3)
 		{
@@ -83,11 +83,12 @@ int main()
 	// accounts = (struct account *)malloc(size * sizeof(struct account));
 	// populateAccounts(accounts, size);
 	// printAccounts(accounts, size);
+	free(accounts);
 }
 
-void populateAccounts(struct account *accounts, int size)
+void populateAccounts(struct account *accounts, int *size, int newSize)
 {
-	for (int i = 0; i < size; i++)
+	for (int i = *size; i < (*size) + newSize; i++)
 	{
 		// char *cin;
 		printf("\n** Account %d **\n", i + 1);
@@ -101,6 +102,8 @@ void populateAccounts(struct account *accounts, int size)
 		scanf("%f", &accounts[i].amount);
 		// strcpy(accounts[i].cin, cin);
 	}
+	*size += newSize;
+	printAccounts(accounts, *size);
 }
 void printAccounts(struct account *accounts, int size)
 {
