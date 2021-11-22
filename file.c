@@ -20,7 +20,7 @@ void ascendingSort(struct account *, int);
 void descendingSort(struct account *, int);
 int lookUpWithCin(struct account *, int, char *);
 void loyalty(struct account *, int, float);
-void depot(struct account *, float, int);
+void deposit(struct account *, float, int);
 void withdraw(struct account *accounts, float, int);
 
 int main()
@@ -35,7 +35,7 @@ int main()
 		sprintf(accounts[i].cin, "cin%d", i + 1);
 		sprintf(accounts[i].lname, "lname%d", i + 1);
 		sprintf(accounts[i].fname, "fname%d", i + 1);
-		accounts[i].amount = rand() * 0.0001;
+		accounts[i].amount = rand() /** 0.0001*/;
 	}
 	while (menu != 0)
 	{
@@ -69,7 +69,7 @@ int main()
 			{
 				printf("\n** menu **\n");
 				printf("1 --> deposit\n");
-				printf("2 --> retrait\n");
+				printf("2 --> witdraw\n");
 				printf("0 --> quite\n");
 				printf("your choice : ");
 				scanf("%d", &choice);
@@ -77,7 +77,7 @@ int main()
 				{
 					int idx;
 					float amount;
-					char *cin;
+					char cin[8];
 				case 1:
 					system("clear");
 					//system("cls");
@@ -94,7 +94,7 @@ int main()
 					{
 						printf("\nenter an amount to deposit\n");
 						scanf("%f", &amount);
-						depot(accounts, amount, idx);
+						deposit(accounts, amount, idx);
 					}
 					break;
 				case 2:
@@ -166,7 +166,7 @@ int main()
 					system("clear");
 					//system("cls");
 					printf("look up process\n");
-					char *cin;
+					char cin[8];
 					printf("enter cin to look up : ");
 					scanf("%s", cin);
 					int idx = lookUpWithCin(accounts, size, cin);
@@ -216,9 +216,10 @@ int main()
 
 void populateAccounts(struct account *accounts, int *size, int newSize)
 {
+	accounts = (struct account *)realloc(accounts, ((*size) + newSize) * sizeof(struct account));
 	for (int i = *size; i < (*size) + newSize; i++)
 	{
-		char *cin;
+		char cin[8];
 		printf("\n** Account %d **\n", i + 1);
 		printf("enter cin : ");
 		scanf("%s", cin);
@@ -323,7 +324,7 @@ int lookUpWithCin(struct account *accounts, int size, char *cin)
 }
 void loyalty(struct account *accounts, int size, float pourc)
 {
-	ascendingSort(accounts, size);
+	descendingSort(accounts, size);
 	system("clear");
 	//system("cls");
 	for (int i = 0; i < 3; i++)
@@ -333,7 +334,7 @@ void loyalty(struct account *accounts, int size, float pourc)
 	}
 	printAccounts(accounts, size);
 }
-void depot(struct account *accounts, float amount, int idx)
+void deposit(struct account *accounts, float amount, int idx)
 {
 	accounts[idx].amount += amount;
 	printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
