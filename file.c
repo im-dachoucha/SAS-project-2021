@@ -14,10 +14,10 @@ struct account
 // void populateAccounts(struct account *, int);
 void printfMenu();
 void populateAccounts(struct account *, int *, int);
-void printAccounts(struct account *, int);
+void printAccounts(struct account *, int, int);
 void printMenuShow();
-void ascendingSort(struct account *, int);
-void descendingSort(struct account *, int);
+void ascendingSort(struct account *, int, int);
+void descendingSort(struct account *, int, int);
 int lookUpWithCin(struct account *, int, char *);
 void loyalty(struct account *, int, float);
 void deposit(struct account *, float, int);
@@ -124,7 +124,7 @@ int main()
 		}
 		else if (menu == 4)
 		{
-			int choice = -1;
+			int choice = -1, min = -1;
 			system("clear");
 			//system("cls");
 			while (choice < 0 || choice > 5)
@@ -144,23 +144,32 @@ int main()
 					system("clear");
 					//system("cls");
 					printf("ascending process\n");
-					ascendingSort(accounts, size);
+					ascendingSort(accounts, size, min);
 					break;
 				case 2:
 					system("clear");
 					//system("cls");
 					printf("descending process\n");
-					descendingSort(accounts, size);
+					descendingSort(accounts, size, min);
 					break;
 				case 3:
 					system("clear");
 					//system("cls");
 					printf("ascending process 2\n");
+					printf("\nenter minimum (higher than 0) : ");
+					scanf("%d", &min);
+					ascendingSort(accounts, size, min);
 					break;
 				case 4:
 					system("clear");
 					//system("cls");
 					printf("descending process 2\n");
+					printf("\nenter minimum (0 or higher) : ");
+					scanf("%d", &min);
+					if (min >= 0)
+						descendingSort(accounts, size, min);
+					else
+						printf("minimum should be higher than 0!!!");
 					break;
 				case 5:
 					system("clear");
@@ -241,15 +250,16 @@ void populateAccounts(struct account *accounts, int *size, int newSize)
 		}
 	}
 	*size += newSize;
-	printAccounts(accounts, *size);
+	printAccounts(accounts, *size, -1);
 }
-void printAccounts(struct account *accounts, int size)
+void printAccounts(struct account *accounts, int size, int min)
 {
 	printf("\n**** Accounts ****\n");
 	for (int i = 0; i < size; i++)
 	{
 		// printf("%s\n", accounts[i].cin);
-		printf("%s\t%s\t%s\t%f\n", accounts[i].cin, accounts[i].lname, accounts[i].fname, accounts[i].amount);
+		if (accounts[i].amount > min)
+			printf("%s\t%s\t%s\t%f\n", accounts[i].cin, accounts[i].lname, accounts[i].fname, accounts[i].amount);
 	}
 }
 
@@ -274,7 +284,7 @@ void printMenuShow()
 	printf("5 --> look up with CIN\n");
 	printf("0 --> quite\n");
 }
-void ascendingSort(struct account *accounts, int size)
+void ascendingSort(struct account *accounts, int size, int min)
 {
 	for (int i = 0; i < size - 1; i++)
 	{
@@ -291,10 +301,10 @@ void ascendingSort(struct account *accounts, int size)
 			accounts[idx] = tmp;
 		}
 	}
-	printAccounts(accounts, size);
+	printAccounts(accounts, size, min);
 }
 
-void descendingSort(struct account *accounts, int size)
+void descendingSort(struct account *accounts, int size, int min)
 {
 	for (int i = 0; i < size - 1; i++)
 	{
@@ -311,7 +321,7 @@ void descendingSort(struct account *accounts, int size)
 			accounts[idx] = tmp;
 		}
 	}
-	printAccounts(accounts, size);
+	printAccounts(accounts, size, min);
 }
 int lookUpWithCin(struct account *accounts, int size, char *cin)
 {
@@ -324,7 +334,7 @@ int lookUpWithCin(struct account *accounts, int size, char *cin)
 }
 void loyalty(struct account *accounts, int size, float pourc)
 {
-	descendingSort(accounts, size);
+	descendingSort(accounts, size, -1);
 	system("clear");
 	//system("cls");
 	for (int i = 0; i < 3; i++)
@@ -332,7 +342,7 @@ void loyalty(struct account *accounts, int size, float pourc)
 		accounts[i].amount += (accounts[i].amount * pourc);
 		// accounts[i].amount = accounts[i].amount + accounts[i].amount * pourc;
 	}
-	printAccounts(accounts, size);
+	printAccounts(accounts, size, -1);
 }
 void deposit(struct account *accounts, float amount, int idx)
 {
