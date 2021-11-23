@@ -92,6 +92,7 @@ int main()
 					}
 					else
 					{
+						printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
 						printf("\nenter an amount to deposit\n");
 						scanf("%f", &amount);
 						deposit(accounts, amount, idx);
@@ -111,6 +112,7 @@ int main()
 					}
 					else
 					{
+						printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
 						printf("\nenter an amount to withdraw\n");
 						scanf("%f", &amount);
 						withdraw(accounts, amount, idx);
