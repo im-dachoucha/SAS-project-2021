@@ -9,11 +9,17 @@ struct account
 	char fname[100];
 	float amount;
 };
+struct transaction
+{
+	// struct account *account;
+	char cin[8];
+	float amount;
+};
 
 // functions signitures
 // void populateAccounts(struct account *, int);
 void printfMenu();
-void populateAccounts(struct account *, int *, int);
+void populateAccounts(struct account *, int *, int, struct transaction *, int *);
 void printAccounts(struct account *, int, int);
 void printMenuShow();
 void ascendingSort(struct account *, int, int);
@@ -21,21 +27,28 @@ void descendingSort(struct account *, int, int);
 int lookUpWithCin(struct account *, int, char *);
 void loyalty(struct account *, int, float);
 void deposit(struct account *, float, int);
-void withdraw(struct account *accounts, float, int);
+void withdraw(struct account *, float, int);
+void printTransactions(struct transaction *, int);
+void addTransaction(struct transaction *, char *, int *, float);
 
 int main()
 {
 	// srand(time(0));
 	struct account *accounts;
-	int size = 4, menu = 1;
+	struct transaction *transactions;
+	int size = 4, menu = 1, transCount = size;
 	float loyaltyPourc = 0.013;
 	accounts = (struct account *)malloc(size * sizeof(struct account));
+	transactions = malloc(transCount * sizeof(struct transaction));
 	for (int i = 0; i < size; i++)
 	{
 		sprintf(accounts[i].cin, "cin%d", i + 1);
 		sprintf(accounts[i].lname, "lname%d", i + 1);
 		sprintf(accounts[i].fname, "fname%d", i + 1);
 		accounts[i].amount = rand() /** 0.0001*/;
+		// transactions[i].account = &accounts[i];
+		strcpy(transactions[i].cin, accounts[i].cin);
+		transactions[i].amount = accounts[i].amount;
 	}
 	while (menu != 0)
 	{
@@ -47,7 +60,7 @@ int main()
 			system("clear");
 			//system("cls");
 			printf("\nadd 1 account process\n");
-			populateAccounts(accounts, &size, 1);
+			populateAccounts(accounts, &size, 1, transactions, &transCount);
 		}
 		else if (menu == 2)
 		{
@@ -57,7 +70,7 @@ int main()
 			printf("\nadd multiple aucounts process\n");
 			printf("\nenter the number of accounts to add :");
 			scanf("%d", &newSize);
-			populateAccounts(accounts, &size, newSize);
+			populateAccounts(accounts, &size, newSize, transactions, &transCount);
 		}
 		else if (menu == 3)
 		{
@@ -96,6 +109,7 @@ int main()
 						printf("\nenter an amount to deposit\n");
 						scanf("%f", &amount);
 						deposit(accounts, amount, idx);
+						addTransaction(transactions, accounts[idx].cin, &transCount, amount);
 					}
 					break;
 				case 2:
@@ -116,6 +130,7 @@ int main()
 						printf("\nenter an amount to withdraw\n");
 						scanf("%f", &amount);
 						withdraw(accounts, amount, idx);
+						addTransaction(transactions, accounts[idx].cin, &transCount, amount * -1);
 					}
 					break;
 
@@ -203,6 +218,12 @@ int main()
 			printf("\nloyalty process\n");
 			loyalty(accounts, size, loyaltyPourc);
 		}
+		else if (menu == 6)
+		{
+			system("clear");
+			//system("cls");
+			printTransactions(transactions, transCount);
+		}
 		else if (menu == 0)
 		{
 
@@ -225,7 +246,7 @@ int main()
 	free(accounts);
 }
 
-void populateAccounts(struct account *accounts, int *size, int newSize)
+void populateAccounts(struct account *accounts, int *size, int newSize, struct transaction *transactions, int *transCount)
 {
 	accounts = (struct account *)realloc(accounts, ((*size) + newSize) * sizeof(struct account));
 	for (int i = *size; i < (*size) + newSize; i++)
@@ -244,6 +265,7 @@ void populateAccounts(struct account *accounts, int *size, int newSize)
 			scanf("%s", accounts[i].fname);
 			printf("enter amount : ");
 			scanf("%f", &accounts[i].amount);
+			addTransaction(transactions, cin, transCount, accounts[i].amount);
 		}
 		else
 		{
@@ -273,6 +295,7 @@ void printfMenu()
 	printf("3 --> operations on accounts\n");
 	printf("4 --> show accounts\n");
 	printf("5 --> loyalty\n");
+	printf("6 --> transactions\n");
 	printf("0 --> quite\n");
 }
 
@@ -363,4 +386,22 @@ void withdraw(struct account *accounts, float amount, int idx)
 		accounts[idx].amount -= amount;
 		printf("%s\t%s\t%s\t%f\n", accounts[idx].cin, accounts[idx].lname, accounts[idx].fname, accounts[idx].amount);
 	}
+}
+
+void printTransactions(struct transaction *transactions, int transCount)
+{
+	for (int i = 0; i < transCount; i++)
+	{
+		printf("%s\t%f\n", transactions[i].cin, transactions[i].amount);
+	}
+}
+void addTransaction(struct transaction *transactions, char *cin, int *transCount, float amount)
+{
+	// printf("\ntransCount = %d\n", *transCount);
+	transactions = realloc(transactions, ((*transCount) + 1) * sizeof(struct transaction));
+	strcpy(transactions[*transCount].cin, cin);
+	transactions[*transCount].amount = amount;
+	*transCount += 1;
+	// printf("\ntransCount = %d\n", *transCount);
+	// printTransactions(transactions, *transCount);
 }
