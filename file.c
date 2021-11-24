@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 struct account
 {
@@ -30,11 +31,11 @@ void deposit(struct account *, float, int);
 void withdraw(struct account *, float, int);
 void printTransactions(struct transaction *, int);
 void addTransaction(struct transaction *, char *, int *, float);
-void writeFiles(struct account *, int);
+void writeFiles(struct account *, int, struct transaction *, int);
 
 int main()
 {
-	// srand(time(0));
+	srand(time(NULL));
 	struct account *accounts;
 	struct transaction *transactions;
 	int size = 4, menu = 1, transCount = size;
@@ -244,7 +245,7 @@ int main()
 	// accounts = (struct account *)malloc(size * sizeof(struct account));
 	// populateAccounts(accounts, size);
 	// printAccounts(accounts, size);
-	writeFiles(accounts, size);
+	writeFiles(accounts, size, transactions, transCount);
 	free(transactions);
 	free(accounts);
 }
@@ -411,13 +412,20 @@ void addTransaction(struct transaction *transactions, char *cin, int *transCount
 	// printTransactions(transactions, *transCount);
 }
 
-void writeFiles(struct account *accounts, int size)
+void writeFiles(struct account *accounts, int accountsSize, struct transaction *transactions, int transSize)
 {
-	FILE *accountsFile;
-	accountsFile = fopen("accounts.txt", "w");
-	for (int i = 0; i < size; i++)
+	FILE *file;
+
+	file = fopen("accounts.txt", "w");
+	for (int i = 0; i < accountsSize; i++)
 	{
-		fprintf(accountsFile, "%s %s %s %f\n", accounts[i].cin, accounts[i].lname, accounts[i].fname, accounts[i].amount);
+		fprintf(file, "%s %s %s %f\n", accounts[i].cin, accounts[i].lname, accounts[i].fname, accounts[i].amount);
 	}
-	fclose(accountsFile);
+	fclose(file);
+	file = fopen("transactions.txt", "w");
+	for (int i = 0; i < transSize; i++)
+	{
+		fprintf(file, "%s %f\n", transactions[i].cin, transactions[i].amount);
+	}
+	fclose(file);
 }
