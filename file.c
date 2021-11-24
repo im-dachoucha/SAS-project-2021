@@ -32,17 +32,19 @@ void withdraw(struct account *, float, int);
 void printTransactions(struct transaction *, int);
 void addTransaction(struct transaction *, char *, int *, float);
 void writeFiles(struct account *, int, struct transaction *, int);
-void readFiles(struct account *, int *, struct transaction *, int *);
+struct account *readAccounts(struct account *, int *);
+// struct account *readFiles(struct account *, int *, struct transaction *, int *);
 
 int main()
 {
 	srand(time(NULL));
 	struct account *accounts;
+	accounts = (struct account *)malloc(sizeof(struct account));
 	struct transaction *transactions;
 	//int size = 4, menu = 1, transCount = size;
 	int size = 0, menu = 1, transCount = 0;
 	float loyaltyPourc = 0.013;
-	readFiles(accounts, &size, transactions, &transCount);
+	accounts = readAccounts(accounts, &size);
 	// accounts = (struct account *)malloc(size * sizeof(struct account));
 	// transactions = malloc(transCount * sizeof(struct transaction));
 	// for (int i = 0; i < size; i++)
@@ -248,9 +250,12 @@ int main()
 	// accounts = (struct account *)malloc(size * sizeof(struct account));
 	// populateAccounts(accounts, size);
 	// printAccounts(accounts, size);
+	printf("\nfree0\n");
 	writeFiles(accounts, size, transactions, transCount);
-	free(transactions);
-	free(accounts);
+	// free(accounts);
+	printf("\nfree1\n");
+	// free(transactions);
+	printf("\nfree2\n");
 }
 
 void populateAccounts(struct account *accounts, int *size, int newSize, struct transaction *transactions, int *transCount)
@@ -262,7 +267,8 @@ void populateAccounts(struct account *accounts, int *size, int newSize, struct t
 		printf("\n** Account %d **\n", i + 1);
 		printf("enter cin : ");
 		scanf("%s", cin);
-		if (lookUpWithCin(accounts, (*size) + newSize, cin) == -1)
+		int idx = lookUpWithCin(accounts, (*size) + newSize, cin);
+		if (idx == -1)
 		{
 			strcpy(accounts[i].cin, cin);
 			// scanf("%s", accounts[i].cin);
@@ -357,6 +363,8 @@ void descendingSort(struct account *accounts, int size, int min)
 }
 int lookUpWithCin(struct account *accounts, int size, char *cin)
 {
+	if (size == 0)
+		return -1;
 	for (int i = 0; i < size; i++)
 	{
 		if (!strcmp(accounts[i].cin, cin))
@@ -415,14 +423,57 @@ void addTransaction(struct transaction *transactions, char *cin, int *transCount
 	// printTransactions(transactions, *transCount);
 }
 
-void readFiles(struct account *accounts, int *accountsSize, struct transaction *transactions, int *transSize)
+struct account *readAccounts(struct account *accounts, int *accountsSize)
 {
 	FILE *file;
 	file = fopen("accounts.txt", "r");
 	if (file == NULL)
 		printf("File not found!!!\n");
 	else
-		printf("File found\n");
+	{
+		char cin[8], lname[50], fname[50];
+		float amount;
+		// printf("File found\n");
+		*accountsSize = 0;
+		// *accountsSize += 1;
+		// printf("\naccountsSize = %d\n", *accountsSize);
+		// accounts = (struct account *)malloc((*accountsSize) * sizeof(struct account));
+		// fscanf(file, "%s %s %s %f\n", cin, lname, fname, &amount);
+		// printf("\ncin:%s|lname:%s|fname:%s|amount:%f\n", cin, lname, fname, amount);
+
+		// strcpy(accounts[0].cin, cin);
+		// strcpy(accounts[0].lname, lname);
+		// strcpy(accounts[0].fname, fname);
+		// accounts[*(accountsSize)-1].amount = amount;
+		// printf("\ncin : %s\n", accounts[0].cin);
+		// printf("\ncin : %s\n", )
+		// (*accountsSize)++;
+
+		while (fscanf(file, "%s %s %s %f\n", cin, lname, fname, &amount) != EOF)
+		{
+			// printf("\ncin : %s\n", cin);
+			if ((*accountsSize) != 0)
+			{
+				accounts = realloc(accounts, ((*accountsSize) + 1) * sizeof(struct account));
+				strcpy(accounts[(*accountsSize)].cin, cin);
+				strcpy(accounts[(*accountsSize)].lname, lname);
+				strcpy(accounts[(*accountsSize)].fname, fname);
+				accounts[(*accountsSize)].amount = amount;
+			}
+			else
+			{
+				accounts = malloc(sizeof(struct account));
+				strcpy(accounts[*accountsSize].cin, cin);
+				strcpy(accounts[*accountsSize].lname, lname);
+				strcpy(accounts[*accountsSize].fname, fname);
+				accounts[*accountsSize].amount = amount;
+			}
+			*accountsSize += 1;
+		}
+		// printf("\nsize = %d\n", *accountsSize);
+	}
+	fclose(file);
+	return accounts;
 }
 
 void writeFiles(struct account *accounts, int accountsSize, struct transaction *transactions, int transSize)
