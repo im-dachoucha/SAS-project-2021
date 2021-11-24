@@ -32,26 +32,29 @@ void withdraw(struct account *, float, int);
 void printTransactions(struct transaction *, int);
 void addTransaction(struct transaction *, char *, int *, float);
 void writeFiles(struct account *, int, struct transaction *, int);
+void readFiles(struct account *, int *, struct transaction *, int *);
 
 int main()
 {
 	srand(time(NULL));
 	struct account *accounts;
 	struct transaction *transactions;
-	int size = 4, menu = 1, transCount = size;
+	//int size = 4, menu = 1, transCount = size;
+	int size = 0, menu = 1, transCount = 0;
 	float loyaltyPourc = 0.013;
-	accounts = (struct account *)malloc(size * sizeof(struct account));
-	transactions = malloc(transCount * sizeof(struct transaction));
-	for (int i = 0; i < size; i++)
-	{
-		sprintf(accounts[i].cin, "cin%d", i + 1);
-		sprintf(accounts[i].lname, "lname%d", i + 1);
-		sprintf(accounts[i].fname, "fname%d", i + 1);
-		accounts[i].amount = rand() /** 0.0001*/;
-		// transactions[i].account = &accounts[i];
-		strcpy(transactions[i].cin, accounts[i].cin);
-		transactions[i].amount = accounts[i].amount;
-	}
+	readFiles(accounts, &size, transactions, &transCount);
+	// accounts = (struct account *)malloc(size * sizeof(struct account));
+	// transactions = malloc(transCount * sizeof(struct transaction));
+	// for (int i = 0; i < size; i++)
+	// {
+	// 	sprintf(accounts[i].cin, "cin%d", i + 1);
+	// 	sprintf(accounts[i].lname, "lname%d", i + 1);
+	// 	sprintf(accounts[i].fname, "fname%d", i + 1);
+	// 	accounts[i].amount = rand() /** 0.0001*/;
+	// 	// transactions[i].account = &accounts[i];
+	// 	strcpy(transactions[i].cin, accounts[i].cin);
+	// 	transactions[i].amount = accounts[i].amount;
+	// }
 	while (menu != 0)
 	{
 		printfMenu();
@@ -410,6 +413,16 @@ void addTransaction(struct transaction *transactions, char *cin, int *transCount
 	*transCount += 1;
 	// printf("\ntransCount = %d\n", *transCount);
 	// printTransactions(transactions, *transCount);
+}
+
+void readFiles(struct account *accounts, int *accountsSize, struct transaction *transactions, int *transSize)
+{
+	FILE *file;
+	file = fopen("accounts.txt", "r");
+	if (file == NULL)
+		printf("File not found!!!\n");
+	else
+		printf("File found\n");
 }
 
 void writeFiles(struct account *accounts, int accountsSize, struct transaction *transactions, int transSize)
