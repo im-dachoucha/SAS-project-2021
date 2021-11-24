@@ -30,6 +30,7 @@ void deposit(struct account *, float, int);
 void withdraw(struct account *, float, int);
 void printTransactions(struct transaction *, int);
 void addTransaction(struct transaction *, char *, int *, float);
+void writeFiles(struct account *, int);
 
 int main()
 {
@@ -243,6 +244,8 @@ int main()
 	// accounts = (struct account *)malloc(size * sizeof(struct account));
 	// populateAccounts(accounts, size);
 	// printAccounts(accounts, size);
+	writeFiles(accounts, size);
+	free(transactions);
 	free(accounts);
 }
 
@@ -390,6 +393,8 @@ void withdraw(struct account *accounts, float amount, int idx)
 
 void printTransactions(struct transaction *transactions, int transCount)
 {
+	printf("cin\tamount\n");
+	printf("------------------\n");
 	for (int i = 0; i < transCount; i++)
 	{
 		printf("%s\t%f\n", transactions[i].cin, transactions[i].amount);
@@ -404,4 +409,15 @@ void addTransaction(struct transaction *transactions, char *cin, int *transCount
 	*transCount += 1;
 	// printf("\ntransCount = %d\n", *transCount);
 	// printTransactions(transactions, *transCount);
+}
+
+void writeFiles(struct account *accounts, int size)
+{
+	FILE *accountsFile;
+	accountsFile = fopen("accounts.txt", "w");
+	for (int i = 0; i < size; i++)
+	{
+		fprintf(accountsFile, "%s %s %s %f\n", accounts[i].cin, accounts[i].lname, accounts[i].fname, accounts[i].amount);
+	}
+	fclose(accountsFile);
 }
